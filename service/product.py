@@ -18,15 +18,23 @@ class ProductService():
 
     def add_product(self,product:Product):
         """Use to create products (need product: Product with params)"""
+
+        existing_product = self.db.query(ProductModel).filter(ProductModel.id == product.id).first()
+        if existing_product:
+            return {"message": "Ya existe un producto con esa ID"}
+
         new_product = ProductModel(
-            name = product.name,
-            brand = product.brand,
-            description = product.description,
-            price = product.price,
-            availability = product.availability,
-            avaliable_quantity = product.avaliable_quantity
+            name=product.name,
+            brand=product.brand,
+            description=product.description,
+            price=product.price,
+            availability=product.availability,
+            avaliable_quantity=product.avaliable_quantity
         )
-        self.db.add(new_product)
-        self.db.commit()
-        return "producto creado correctamente"
+        if new_product:
+            self.db.add(new_product)
+            self.db.commit()
+            return {"message": "Producto inventariado correctamente"}
+        
+
 

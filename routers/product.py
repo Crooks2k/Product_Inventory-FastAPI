@@ -11,29 +11,45 @@ from service.product import ProductService
 product_router = APIRouter()
 
 
-@product_router.get("/products", tags=["Products"], response_model=List[Product], status_code=200)
+@product_router.get(
+    "/products", tags=["Products"], response_model=List[Product], status_code=200
+)
 def get_products():
     db = Session()
-    try:
-        result = ProductService(db).get_product()
-        return JSONResponse(content=jsonable_encoder(result), status_code=200)
-    except Exception as e:
-        return JSONResponse(content=jsonable_encoder(e), status_code=500)
+
+    result = ProductService(db).get_product()
+    if not result:
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Hubo un problema al procesar la solicitud"},
+        )
+    return JSONResponse(content=jsonable_encoder(result), status_code=200)
+
 
 @product_router.get("/product/{id}", tags=["Products"], status_code=200)
 def get_product(id: int):
     db = Session()
-    try:
-        result = ProductService(db).get_product(id)
-        return JSONResponse(content=jsonable_encoder(result), status_code=200)
-    except Exception as e:
-        return JSONResponse(content=jsonable_encoder(e), status_code=500)
+
+    result = ProductService(db).get_product_by_id(id)
+    if not result:
+        return JSONResponse(
+            status_code=404,
+            content={"message": "No se encuentro ningun elemento con esa id"},
+        )
+    return JSONResponse(content=jsonable_encoder(result), status_code=200)
+
 
 @product_router.post("/addproduct/{id}", tags=["Products"], status_code=200)
 def new_product(product: Product):
     db = Session()
-    try:
-        result = ProductService(db).add_product(product)
-        return JSONResponse(status_code=404,content={"message": result})
-    except Exception as e:
-        return JSONResponse(content=jsonable_encoder(e), status_code=500)
+
+    result = ProductService(db).add_product(product)
+    if not result:
+        return JSONResponse(
+            status_code=404,
+            content={"message": "Se encontro un error al crear el producto"},
+        )
+    if result == {"message": "Ya existe un producto con esa ID"}:
+        return JSONResponse(status_code=409, content={"message": result})
+    return JSONResponse(status_code=201, content={"message": result})
+
