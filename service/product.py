@@ -21,7 +21,7 @@ class ProductService():
 
         existing_product = self.db.query(ProductModel).filter(ProductModel.id == product.id).first()
         if existing_product:
-            return {"message": "Ya existe un producto con esa ID"}
+            return "Ya existe un producto con esa ID"
 
         new_product = ProductModel(
             name=product.name,
@@ -34,7 +34,29 @@ class ProductService():
         if new_product:
             self.db.add(new_product)
             self.db.commit()
-            return {"message": "Producto inventariado correctamente"}
+            return "Producto inventariado correctamente"
         
+    def edit_product(self, data: Product):
+        """Use to edit products (need two params => id: int || product: Product)"""
+        product_exist = self.db.query(ProductModel).filter(ProductModel.id == data.id).first()
+        if not product_exist:
+            return "No existe un producto con esa ID, verifica el campo y vuelve a intentarlo"
+        
+        product_exist.name = data.name
+        product_exist.brand = data.brand
+        product_exist.description = data.description
+        product_exist.price = data.price
+        product_exist.availability = data.availability
+        product_exist.avaliable_quantity = data.avaliable_quantity
+        self.db.commit()
+        
+        return "El producto fue editado correctamente"
 
-
+    def delete_product(self, id: int):
+        """Use to deleted product, need one param => id: int"""
+        product_exist = self.db.query(ProductModel).filter(ProductModel.id == id).first()
+        if not product_exist:
+            return "No existe un producto con esa ID para eliminar, verifica el campo y vuelve a intentarlo"
+        self.db.delete(product_exist)
+        self.db.commit()
+        return "el producto fue eliminado correctamente"

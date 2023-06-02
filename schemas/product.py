@@ -15,10 +15,10 @@ class Product(BaseModel):
         schema_extra = {
             "example": {
                 "id": 1,
-                "name": "Nombre producto",
-                "brand": "Marca producto",
-                "description": "Descripción del producto",
-                "price": 1400,
+                "name": "Iphone 13",
+                "brand": "Apple",
+                "description": "El iphone 13 es un telefono de gama alta por la empresa apple",
+                "price": 1600,
                 "availability": "disponible | no-disponible",
                 "avaliable_quantity": 34,
             }
