@@ -1,7 +1,7 @@
 from models.product import Product as ProductModel
 from schemas.product import Product
 
-class ProductService():
+class Product__Service():
 
     def __init__(self,db):
         self.db = db
@@ -38,7 +38,7 @@ class ProductService():
         
     def edit_product(self, data: Product):
         """Use to edit products (need two params => id: int || product: Product)"""
-        product_exist = self.db.query(ProductModel).filter(ProductModel.id == data.id).first()
+        product_exist: Product = self.db.query(ProductModel).filter(ProductModel.id == data.id).first()
         if not product_exist:
             return "No existe un producto con esa ID, verifica el campo y vuelve a intentarlo"
         

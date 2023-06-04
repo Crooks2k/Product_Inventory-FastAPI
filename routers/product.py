@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.security import HTTPBearer
 from config.database import Session
 from schemas.product import Product
-from service.product import ProductService
+from service.product import Product__Service
 
 
 product_router = APIRouter()
@@ -17,11 +17,11 @@ product_router = APIRouter()
 def get_products():
     db = Session()
 
-    result = ProductService(db).get_product()
+    result = Product__Service(db).get_product()
     if not result:
         return JSONResponse(
-            status_code=500,
-            content={"message": "Hubo un problema al procesar la solicitud"},
+            status_code=404,
+            content={"message": "La lista de productos se encuentra vacia"},
         )
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
 
@@ -30,7 +30,7 @@ def get_products():
 def get_product(id: int):
     db = Session()
 
-    result = ProductService(db).get_product_by_id(id)
+    result = Product__Service(db).get_product_by_id(id)
     if not result:
         return JSONResponse(
             status_code=404,
@@ -43,7 +43,7 @@ def get_product(id: int):
 def new_product(product: Product):
     db = Session()
 
-    result = ProductService(db).add_product(product)
+    result = Product__Service(db).add_product(product)
     if not result:
         return JSONResponse(
             status_code=500,
@@ -57,7 +57,7 @@ def new_product(product: Product):
 @product_router.put("/editproduct/{id}", tags=["Products"], status_code=200)
 def edit_product(data: Product):
     db = Session()
-    result = ProductService(db).edit_product(data)
+    result = Product__Service(db).edit_product(data)
     if not result:
         return JSONResponse(
             status_code=500,
@@ -70,7 +70,7 @@ def edit_product(data: Product):
 @product_router.delete("/deleteproduct/{id}", tags=["Products"], status_code=200)
 def delete_product(id: int):
     db = Session()
-    result = ProductService(db).delete_product(id)
+    result = Product__Service(db).delete_product(id)
     if not result:
         return JSONResponse(
             status_code=500,
