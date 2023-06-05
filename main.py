@@ -7,7 +7,7 @@ from config.database import engine, Base
 from middlewares.error_handler import Errorhandler
 from routers.product import product_router
 from routers.supplier import supplier_router
-
+from routers.supplies import supplies_router
 
 app = FastAPI()
 app.title = "Proyecto de CRUD de inventario - FastAPI"
@@ -24,4 +24,5 @@ def message():
 app.add_middleware(Errorhandler)
 app.include_router(product_router)
 app.include_router(supplier_router)
+app.include_router(supplies_router)
 
